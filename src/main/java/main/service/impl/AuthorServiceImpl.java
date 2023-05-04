@@ -1,20 +1,17 @@
 package main.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import main.dto.AuthorDto;
 import main.entity.Author;
 import main.handler.BadRequestException;
 import main.handler.ResourceNotFoundException;
 import main.repository.AuthorRepository;
 import main.service.AuthorService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,12 +19,10 @@ import java.util.Optional;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public AuthorServiceImpl(AuthorRepository authorRepository, ModelMapper modelMapper) {
+    public AuthorServiceImpl(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
-        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -79,15 +74,11 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.delete(existingAuthor);
     }
     private boolean isExist(Author author) {
-        return Objects.isNull(authorRepository.findById(author.getId()));
+        return Objects.nonNull(authorRepository.findAuthorByNameOrId(author.getName(),author.getId()));
     }
 
-
-    private AuthorDto convertToDto(Author author) {
-        return modelMapper.map(author, AuthorDto.class);
-    }
-
-    private Author convertEntity(AuthorDto authorDto) {
-        return  modelMapper.map(authorDto, Author.class);
+    @Override
+    public Author getAuthorByNameOrId(String name, Long id) {
+        return authorRepository.findAuthorByNameOrId(name, id);
     }
 }

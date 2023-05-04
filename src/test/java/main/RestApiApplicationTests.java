@@ -27,7 +27,7 @@ class RestApiApplicationTests {
 	@Test
 	void testCreateAuthor() {
 		Author author = new Author();
-		author.setName("Test Author");
+		author.setName("TestCreate Author");
 		author.setId(30L);
 
 		// Test creating author
@@ -38,7 +38,6 @@ class RestApiApplicationTests {
 		Author fetchedAuthor = authorController.getAuthorById(createdAuthor.getId());
 		assertNotNull(fetchedAuthor);
 		assertEquals(createdAuthor.getName(), fetchedAuthor.getName());
-
 	}
 
 	@Test
@@ -78,7 +77,7 @@ class RestApiApplicationTests {
 	@Test
 	void testCreateAndGetBook() {
 		Author author = new Author();
-		author.setName("Test Author");
+		author.setName("Test Create Author");
 		author.setId(2L);
 		Author createdAuthor = authorController.createAuthor(author);
 
@@ -105,7 +104,7 @@ class RestApiApplicationTests {
 	@Test
 	void testUpdateBook() {
 		Author author = new Author();
-		author.setName("Test Author");
+		author.setName("Test Update Author");
 		author.setId(2L);
 		Author createdAuthor = authorController.createAuthor(author);
 
@@ -129,8 +128,8 @@ class RestApiApplicationTests {
 	@Test
 	void testDeleteBook() {
 		Author author = new Author();
-		author.setName("Test Author");
-		author.setId(2L);
+		author.setName("Test Delete Author");
+		author.setId(22L);
 		Author createdAuthor = authorController.createAuthor(author);
 
 		Book book = new Book();

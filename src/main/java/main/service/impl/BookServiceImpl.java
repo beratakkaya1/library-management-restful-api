@@ -1,10 +1,12 @@
 package main.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import main.entity.Author;
 import main.entity.Book;
 import main.handler.BadRequestException;
 import main.handler.ResourceNotFoundException;
 import main.repository.BookRepository;
+import main.service.AuthorService;
 import main.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,11 @@ import java.util.Objects;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-
+    private final AuthorService authorService;
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, AuthorService authorService) {
         this.bookRepository = bookRepository;
+        this.authorService = authorService;
     }
 
     @Override
@@ -47,6 +50,10 @@ public class BookServiceImpl implements BookService {
         if (book.getTitle() == null || book.getTitle().isEmpty()) {
             throw new BadRequestException("Book title cannot be empty.");
         }
+        if(!isAuthorExist(book)){
+            return bookRepository.save(book);
+        }
+        book.setAuthor(getAuthor(book.getAuthor()));
         return bookRepository.save(book);
     }
     @Override
@@ -67,5 +74,21 @@ public class BookServiceImpl implements BookService {
         log.info("Book by id: " + id + " Deleted!");
         Book existingBook = getBookById(id);
         bookRepository.delete(existingBook);
+    }
+
+    @Override
+    public List<Book> getBookByAuthorName(String name) {
+        return bookRepository.findByAuthor_Name(name);
+    }
+
+    private boolean isAuthorExist(Book newBook){
+        if(Objects.nonNull(newBook.getAuthor())){
+        Author author = getAuthor(newBook.getAuthor());
+           return Objects.nonNull(author);
+        }
+        throw new BadRequestException("Author cannot be empty.");
+    }
+    private Author getAuthor(Author author){
+        return authorService.getAuthorByNameOrId(author.getName(),author.getId());
     }
 }

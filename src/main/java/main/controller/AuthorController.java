@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import main.entity.Author;
 import main.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +20,13 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Author createAuthor(@RequestBody Author author) {
         log.info("create Author method");
         return authorService.createAuthor(author);
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
     public Author getAuthorById(@PathVariable Long id) {
         log.info("Fetching author with id: " + id);
         return authorService.getAuthorById(id);
@@ -40,14 +38,13 @@ public class AuthorController {
         return authorService.getAllAuthors();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public Author updateAuthor(@PathVariable Long id, @RequestBody Author author) {
         log.info("Updating author with id: " + id);
         return authorService.updateAuthor(id, author);
     }
 
-    @DeleteMapping("/{id}")
-
+    @DeleteMapping("/delete/{id}")
     public void deleteAuthor(@PathVariable Long id) {
         log.info("Deleting author with id: " + id);
         authorService.deleteAuthor(id);
